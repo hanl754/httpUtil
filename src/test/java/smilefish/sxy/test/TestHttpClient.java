@@ -39,11 +39,4 @@ public class TestHttpClient {
         System.out.println(TestHttpClient.class);
     }
 
-    public HttpUtil getHttpUtil() {
-        return httpUtil;
-    }
-
-    public void setHttpUtil(HttpUtil httpUtil) {
-        this.httpUtil = httpUtil;
-    }
 }
