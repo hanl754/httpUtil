@@ -2,8 +2,8 @@ package smilefish.sxy.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import smilfish.xyz.util.HttpUtil;
-import smilfish.xyz.util.impl.HttpUtilImpl;
+import smilefish.xyz.util.HttpUtil;
+import smilefish.xyz.util.impl.HttpUtilImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,5 +31,19 @@ public class TestHttpClient {
         params.put("pwd", "asd");
         String result = httpUtil.post("http://blog.com/wp-login.php", params);
         System.out.println(result);
+    }
+
+    @Test
+    public void testName() throws Exception {
+        System.out.println(this);
+        System.out.println(TestHttpClient.class);
+    }
+
+    public HttpUtil getHttpUtil() {
+        return httpUtil;
+    }
+
+    public void setHttpUtil(HttpUtil httpUtil) {
+        this.httpUtil = httpUtil;
     }
 }
