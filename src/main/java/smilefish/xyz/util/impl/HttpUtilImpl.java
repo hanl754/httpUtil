@@ -4,10 +4,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.AbstractHttpMessage;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,16 @@ import java.util.Map;
 @Service("httpUtil")
 public class HttpUtilImpl implements HttpUtil {
     private final HttpClient httpClient = new DefaultHttpClient();
+    private String extraInfo = "";
 
     public String get(String baseUrl, Map<String, String> params) {
         String response = null;
         String url = buildUrl(baseUrl, params);
         HttpGet httpGet = new HttpGet(url);
         //设置请求头
-//        httpGet.setHeader("", "");
+        if(!"".equals(extraInfo)) {
+            setRequestHeader(httpGet, extraInfo);
+        }
         try {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             response = httpClient.execute(httpGet, responseHandler);
@@ -44,7 +49,9 @@ public class HttpUtilImpl implements HttpUtil {
         String response = null;
         HttpPost httpPost = new HttpPost(baseUrl);
         //设置请求头
-        httpPost.setHeader("", "");
+        if(!"".equals(extraInfo)) {
+            setRequestHeader(httpPost, extraInfo);
+        }
         //设置参数
         List<NameValuePair> nameValuePairList = new ArrayList<NameValuePair>();
         for(Map.Entry<String, String> entry:params.entrySet()) {
@@ -77,5 +84,25 @@ public class HttpUtilImpl implements HttpUtil {
             url+=param;
         }
         return url.substring(0, url.length()-1);
+    }
+
+
+    /**
+     * 设置请求头
+     * @param abstractHttpMessage
+     * @param extraInfo
+     */
+    private void setRequestHeader(AbstractHttpMessage abstractHttpMessage, String extraInfo) {
+        String[] pairs = extraInfo.split("&");
+        for(int i=0; i<pairs.length; i++) {
+            int index = pairs[i].indexOf(":");
+            String k = pairs[i].substring(0, index);
+            String v = pairs[i].substring(index+1);
+            abstractHttpMessage.setHeader(k, v);
+        }
+    }
+
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
     }
 }
